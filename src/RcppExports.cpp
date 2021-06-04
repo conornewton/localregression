@@ -19,33 +19,21 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
-// lm_qr_rcpp
-arma::vec lm_qr_rcpp(const arma::mat& X, const arma::vec& y);
-RcppExport SEXP _lr_lm_qr_rcpp(SEXP XSEXP, SEXP ySEXP) {
+// lm_qr
+arma::vec lm_qr(const arma::mat& X, const arma::vec& y);
+RcppExport SEXP _lr_lm_qr(SEXP XSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
     Rcpp::traits::input_parameter< const arma::vec& >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(lm_qr_rcpp(X, y));
+    rcpp_result_gen = Rcpp::wrap(lm_qr(X, y));
     return rcpp_result_gen;
 END_RCPP
 }
-// lm_ch_rcpp
-arma::vec lm_ch_rcpp(arma::mat& X, arma::vec& y);
-RcppExport SEXP _lr_lm_ch_rcpp(SEXP XSEXP, SEXP ySEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(lm_ch_rcpp(X, y));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lm_local_reg
-double lm_local_reg(const arma::vec& y, const arma::rowvec& x0, const arma::rowvec& X0, const arma::mat& x, const arma::mat& X, const arma::mat& L);
-RcppExport SEXP _lr_lm_local_reg(SEXP ySEXP, SEXP x0SEXP, SEXP X0SEXP, SEXP xSEXP, SEXP XSEXP, SEXP LSEXP) {
+// lm_local_pred
+double lm_local_pred(const arma::vec& y, const arma::rowvec& x0, const arma::rowvec& X0, const arma::mat& x, const arma::mat& X, const arma::mat& L);
+RcppExport SEXP _lr_lm_local_pred(SEXP ySEXP, SEXP x0SEXP, SEXP X0SEXP, SEXP xSEXP, SEXP XSEXP, SEXP LSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::RNGScope rcpp_rngScope_gen;
@@ -55,23 +43,7 @@ BEGIN_RCPP
     Rcpp::traits::input_parameter< const arma::mat& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type X(XSEXP);
     Rcpp::traits::input_parameter< const arma::mat& >::type L(LSEXP);
-    rcpp_result_gen = Rcpp::wrap(lm_local_reg(y, x0, X0, x, X, L));
-    return rcpp_result_gen;
-END_RCPP
-}
-// lm_local_reg_iter
-arma::vec lm_local_reg_iter(arma::vec& y, const arma::mat& x0, const arma::mat& X0, arma::mat& x, arma::mat& X, arma::mat& L);
-RcppExport SEXP _lr_lm_local_reg_iter(SEXP ySEXP, SEXP x0SEXP, SEXP X0SEXP, SEXP xSEXP, SEXP XSEXP, SEXP LSEXP) {
-BEGIN_RCPP
-    Rcpp::RObject rcpp_result_gen;
-    Rcpp::RNGScope rcpp_rngScope_gen;
-    Rcpp::traits::input_parameter< arma::vec& >::type y(ySEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type x0(x0SEXP);
-    Rcpp::traits::input_parameter< const arma::mat& >::type X0(X0SEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type x(xSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type X(XSEXP);
-    Rcpp::traits::input_parameter< arma::mat& >::type L(LSEXP);
-    rcpp_result_gen = Rcpp::wrap(lm_local_reg_iter(y, x0, X0, x, X, L));
+    rcpp_result_gen = Rcpp::wrap(lm_local_pred(y, x0, X0, x, X, L));
     return rcpp_result_gen;
 END_RCPP
 }
@@ -89,10 +61,8 @@ END_RCPP
 
 static const R_CallMethodDef CallEntries[] = {
     {"_lr_dmvnInt", (DL_FUNC) &_lr_dmvnInt, 3},
-    {"_lr_lm_qr_rcpp", (DL_FUNC) &_lr_lm_qr_rcpp, 2},
-    {"_lr_lm_ch_rcpp", (DL_FUNC) &_lr_lm_ch_rcpp, 2},
-    {"_lr_lm_local_reg", (DL_FUNC) &_lr_lm_local_reg, 6},
-    {"_lr_lm_local_reg_iter", (DL_FUNC) &_lr_lm_local_reg_iter, 6},
+    {"_lr_lm_qr", (DL_FUNC) &_lr_lm_qr, 2},
+    {"_lr_lm_local_pred", (DL_FUNC) &_lr_lm_local_pred, 6},
     {"_lr_get_chol", (DL_FUNC) &_lr_get_chol, 1},
     {NULL, NULL, 0}
 };

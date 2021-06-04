@@ -2,9 +2,9 @@
 #include <RcppArmadillo.h>
 
 //' Evaluates the mutltivariate normal density function
-//' @param X,
-//' @param mu, the mean of the distribution
-//' @param L, the lower cholesky matrix of the bandwidth matrix H
+//' @param X arma::mat - rows will be evaluated by the normal density function
+//' @param mu arma::vec- mean of the distribution
+//' @param L arma::mat - lower cholesky matrix of the bandwidth matrix H
 // [[Rcpp::export(name = "dmvnInt")]]
 arma::vec dmvnInt(const arma::mat &X, const arma::rowvec &mu, const arma::mat &L)
 {
@@ -34,8 +34,12 @@ arma::vec dmvnInt(const arma::mat &X, const arma::rowvec &mu, const arma::mat &L
     return out;
 }
 
-// [[Rcpp::export(name = "lm_qr_rcpp")]]
-arma::vec lm_qr_rcpp(const arma::mat &X, const arma::vec &y)
+//' Computes the least square parameters using QR decomposition
+//' @param X arma::mat - rows are samples from the data
+//' @param y arma::mat - outcomes corresponding to the rows of X
+//' @return parameters of the least squares estimator
+// [[Rcpp::export(name = "lm_qr")]]
+arma::vec lm_qr(const arma::mat &X, const arma::vec &y)
 {
     arma::mat Q;
     arma::mat R;
@@ -46,33 +50,43 @@ arma::vec lm_qr_rcpp(const arma::mat &X, const arma::vec &y)
 
     return betas;
 }
-
-// [[Rcpp::export(name = "lm_local_reg_pred")]]
-double lm_local_reg_pred(const arma::vec &y, const arma::rowvec &x0, const arma::rowvec &X0, const arma::mat &x, const arma::mat &X, const arma::mat &L)
+//' Train a local least regression model and make a prediction at a single point
+//' @param y arma::vec - outcomes of the data
+//' @param x0 arma::vec- the point to make a prediction at
+//' @param X0 arma::vec - feature transform of x0
+//' @param x arma::mat - rows are samples from the data
+//' @param X arma::mat - feature transform's of rows of x
+//' @param L arma::mat - Lower Cholesky matrix of the bandwidth matrix
+// [[Rcpp::export(name = "lm_local_pred")]]
+double lm_local_pred(const arma::vec &y, const arma::rowvec &x0, const arma::rowvec &X0, const arma::mat &x, const arma::mat &X, const arma::mat &L)
 {
-
     arma::vec weights = arma::sqrt(dmvnInt(x, x0, L));
-
-    arma::vec betas = lm_qr_rcpp(X.each_col() % weights, y % weights);
-
+    arma::vec betas = lm_qr(X.each_col() % weights, y % weights);
     return arma::as_scalar(X0 * betas); //element-wise multiplication
 }
 
-// [[Rcpp::export(name = "lm_local_reg_pred_multiple")]]
-arma::vec lm_local_reg_pred_multiple(arma::vec &y, const arma::mat &x0, const arma::mat &X0, arma::mat &x, arma::mat &X, arma::mat &L)
+//' Train a local least regression model and make predictions at multiple points
+//' This iterates over the data and call lm_local_pred
+//' @param y arma::vec - outcomes of the data
+//' @param x0 arma::vec - rows are points to make predictions at
+//' @param X0 arma::mat - feature transform of rows of X0
+//' @param x arma::mat - rows are samples from the data
+//' @param X arma::mat - feature transform's of rows of x
+//' @param L arma::mat - Lower Cholesky matrix of the bandwidth matrix
+arma::vec lm_local_multi_pred(arma::vec &y, const arma::mat &x0, const arma::mat &X0, arma::mat &x, arma::mat &X, arma::mat &L)
 {
     unsigned int n = X0.n_rows;
     arma::vec out(n);
 
     for (unsigned int i = 0; i < n; i++)
     {
-        out[i] = lm_local_reg_pred(y, x0.row(i), X0.row(i), x, X, L);
+        out[i] = lm_local_pred(y, x0.row(i), X0.row(i), x, X, L);
     }
     return out;
 }
 
 //' Get the lower cholesky decomposition of  a matrix
-//' @param H arma::mat, the matrix to perform cholesky decomposition on
+//' @param H matrix - the matrix to perform cholesky decomposition on
 //' @return Lower cholesky matrix of H
 // [[Rcpp::export(name = "get_chol")]]
 arma::mat get_chol(arma::mat &H)

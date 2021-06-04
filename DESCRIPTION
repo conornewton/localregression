@@ -1,12 +1,12 @@
 Package: lr
 Type: Package
-Title: What the Package Does in One 'Title Case' Line
+Title: Local-Regression
 Version: 1.0
 Date: 2021-06-03
-Author: Your Name
-Maintainer: Your Name <your@email.com>
-Description: One paragraph description of what the package does as one
-        or more full sentences.
+Author: Conor Newton
+Maintainer: Conor Newton <conornewton@gmail.com>
+Description: Local-Regression implemented in Rcpp
 License: GPL (>= 2)
 Imports: Rcpp (>= 1.0.5)
 LinkingTo: Rcpp, RcppArmadillo
+RoxygenNote: 7.1.1
